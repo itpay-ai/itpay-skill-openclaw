@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "package": "@itpay/cli",
+  "version": "2.0.15",
+  "npmIntegrity": "sha512-QkaDHQ7p9q1V4KLDXZxRsC2YTagV7qk64pW0InJ+Q4vqpqNB+Ql6Fau2MIgoXVoAl/Cemony9M5JLMvKwqrh/A==",
+  "sourceGitSha": "3ead175c3a94dc50978dd5dda4a9c674b45d31be",
+  "generatedAt": "2026-07-22T08:26:34.904Z",
+  "node": ">=18",
+  "dependencyLockSha256": "ba05ac7b821da6a2db6c695882bffe0103d786d23983d83602e72250dc5552ac"
+}
