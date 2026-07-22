@@ -4,6 +4,7 @@ description: >
   Use the single ItPay entry point when a human asks an Agent to buy or sell
   through ItPay. Buyer workflows cover service discovery, purchase, Checkout,
   delivery, recovery, and refunds. Seller workflows are not yet implemented.
+license: MIT-0
 metadata:
   openclaw:
     requires:
