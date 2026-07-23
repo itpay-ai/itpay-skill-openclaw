@@ -9,7 +9,7 @@ Portable OpenClaw Skill with a pinned, offline `@itpay/cli` bundle.
 - Total artifact size must stay below ClawHub's 50 MB limit.
 - Agent Type: `openclaw` for the whole flow.
 - The Skill never downloads `latest`, hides commands, asks for private keys, or approves payment on the user's behalf.
-- ClawHub Skills are MIT-0; bundled ItPay CLI and dependency license notices remain separately included in `vendor/itpay-cli/package/` and `node_modules/`.
+- ClawHub Skills are MIT-0; bundled ItPay CLI and dependency license notices remain separately included under `vendor/itpay-cli/`.
 - ClawHub has no paid-Skill or revenue-share metadata. ItPay prices are external service costs and must be shown before Checkout.
 
 ## Publish

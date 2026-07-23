@@ -13,6 +13,8 @@ test("bundled CLI matches the locked version", () => {
   assert.equal(lock.format, "single-file-esm");
   assert.match(lock.npmIntegrity, /^sha512-/);
   assert.equal(existsSync(new URL("../skills/itpay/vendor/itpay-cli/node_modules", import.meta.url)), false);
+  assert.equal(existsSync(new URL("../skills/itpay/vendor/itpay-cli/package", import.meta.url)), false);
+  assert.equal(existsSync(new URL("../skills/itpay/vendor/itpay-cli/docs/agent/buyer/quickstart.json", import.meta.url)), true);
   assert.equal(existsSync(new URL("../skills/itpay/vendor/itpay-cli/licenses/commander/LICENSE", import.meta.url)), true);
   assert.equal(existsSync(new URL("../skills/itpay/vendor/itpay-cli/licenses/qrcode/license", import.meta.url)), true);
 });
