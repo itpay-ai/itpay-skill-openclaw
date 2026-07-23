@@ -10,7 +10,7 @@ const child = spawn(process.execPath, [entry, ...process.argv.slice(2)], {
   stdio: "inherit",
   env: {
     ...process.env,
-    ITPAY_CLI_DOCS_DIR: resolve(skillRoot, "vendor/itpay-cli/package/docs/agent/buyer"),
+    ITPAY_CLI_DOCS_DIR: resolve(skillRoot, "vendor/itpay-cli/docs/agent/buyer"),
     ITPAY_CLI_SKILLS_DIR: dirname(skillRoot),
   },
 });
