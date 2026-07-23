@@ -67,7 +67,7 @@ If `backend_contract_incompatible` returns `result.required_cli_version`, stop e
 
 OpenClaw has no default Host. Before every command that accepts `--host`, derive the current entry from trusted OpenClaw conversation context and pass it explicitly:
 
-- Telegram: `--host telegram --target telegram:<chat_id>`. For forum topics use `telegram:<chat_id>:topic:<topic_id>`.
+- Telegram: `--host telegram --target <chat_id>`. For forum topics use `<chat_id>:topic:<topic_id>`. These are native OpenClaw targets; never add a `telegram:` prefix.
 - Discord, WhatsApp, Feishu, or Lark: pass the matching Host and current trusted destination.
 - Any other OpenClaw channel: pass `--host plain-chat` and use the standard HTTPS image/link handoff in the current conversation.
 
@@ -104,11 +104,12 @@ Then follow each returned `next.command` on the same Service Execution.
 
 When `status` is `human_checkout_required`, make the amount, ItPay Checkout QR, and `handoff.url` visible on the current human surface, then stop.
 
-- Telegram: execute `handoff.agent_action` with OpenClaw's native `message` tool. It already contains the trusted target, QR media, Checkout URL, and typed buttons.
+- Telegram: immediately execute `handoff.agent_action` unchanged with OpenClaw's native `message` tool. It already contains the trusted native target, QR media, Checkout URL, and compatible `blocks.buttons`. Never rewrite its Presentation, switch message tools, split out its buttons, or claim a normal reply sent them.
 - If Telegram native buttons are unavailable, send the same `handoff.qr_image_url` and `handoff.url` as ordinary content. Do not create another Checkout.
 - Any other entry: show `handoff.qr_image_url` when present, the amount, and `handoff.url` in the current conversation, then stop.
-- A callback `itp:checkout:<checkout_id>` is a read-only status request. Run the locked launcher as `checkout --id <checkout_id> --host <current_host> [--target <trusted_target>] --json`, reusing the locally saved token.
-- Never place a display token in a callback. A callback, rendered QR, redirect, or human claim is not payment proof.
+- The buttons are exactly `📱 手机点这儿支付` with a URL and `📋 已授权给我读` with callback `itp:grant_confirmed:<checkout_id>`.
+- That callback means the human claims they completed the Checkout-page read authorization. Immediately run the current envelope's `next.command` for the same Checkout, then execute only Backend-returned `next.command` values through the same Execution's grant flow.
+- Never place a display token in a callback. The callback is permission to query authoritative state, not proof of payment or an active grant. Do not read or guess protected results until Backend returns `grant_active`.
 - Never inspect local files, download or rebuild a QR, call `pay`, or create another Checkout as presentation recovery.
 
 Run `next.command` only after the human says they acted or asks for status. QR rendering, redirects, and human claims are not payment proof; only Backend Checkout or Order state is. Normal payment uses the Checkout page; `pay` and `buy --pay` are operator escape hatches, never recovery.
