@@ -20,8 +20,9 @@ Use the CLI as the only ItPay control surface. Never recreate API calls or hardc
 ## OpenClaw Runtime
 
 - Run `node <skill-root>/scripts/itpay.mjs`. Treat every leading `itpay` in this Skill or a returned `next.command` as that locked launcher.
-- Keep `openclaw` as the Agent Type for the entire flow; do not impersonate another host.
+- The launcher fixes `openclaw` as the Agent Type for the entire flow. Never pass another type or switch identity to recover quota.
 - Node.js 18+ is the only host runtime requirement. The bundled CLI must not install packages or download code at runtime.
+- Skill changes require `openclaw skills update itpay`, then a new session.
 - ClawHub does not charge for Skills. ItPay service prices are external costs and must be shown before Checkout.
 
 ## One Entry Point, Two Action Domains
@@ -35,7 +36,6 @@ Use the CLI as the only ItPay control surface. Never recreate API calls or hardc
 
 - The CLI defaults to production `https://app.itpay.ai`. Only an explicit test may use the exact prefix `ITPAY_BACKEND_URL=https://dev.itpay.ai`; never use another Backend. While testing dev, execute every returned command unchanged so that prefix is preserved.
 - Keep one honest Agent Type, one CLI/Node launcher, and one Host-approved permission context for the whole flow. This package uses `openclaw`.
-- WorkBuddy: before any ItPay Bash command that persists `~/.itpay-v3`, set the Shell tool parameter `dangerouslyDisableSandbox` to `true`. If the human denies that permission, the command did not run: stop and report it.
 - Windows, tasks, chats, processes, and model sessions are not new Agents. Never rotate Agent Type or identity to reset quota.
 - Treat `next.command` as the preferred continuation, not an unconditional command. If the current result already satisfies the user's stated goal, present it and stop.
 - Keep internal parsing, retries, sandbox diagnosis, and command translation out of the user response; report useful progress, results, and real human decisions only.
@@ -44,17 +44,14 @@ Use the CLI as the only ItPay control surface. Never recreate API calls or hardc
 ## Bootstrap
 
 ```bash
-npm install -g @itpay/cli
-itpay readyz --json
-itpay skill show itpay --json
-itpay install --json
-itpay install <agent_type> --json
-itpay --agent-type <agent_type> readyz --json
+node <skill-root>/scripts/itpay.mjs readyz --json
+node <skill-root>/scripts/itpay.mjs skill show itpay --json
+node <skill-root>/scripts/itpay.mjs install openclaw --json
 ```
 
-Follow the returned `next.command`. After typed `readyz`, read this complete Skill again, then continue to Catalog.
+After `readyz`, read this complete Skill again, then continue to Catalog. Translate a returned command only by replacing its leading `itpay` with the locked launcher; preserve every argument.
 
-If `backend_contract_incompatible` returns `result.required_cli_version`, stop every ItPay business command. Run only its exact `npm install -g @itpay/cli@<version>` recovery; never substitute `latest`. Confirm `itpay --version` exactly matches the required version, then restart with typed `readyz`. Never change Agent Type or Device identity to bypass compatibility.
+If `backend_contract_incompatible` returns `result.required_cli_version`, stop every ItPay business command. Run only `openclaw skills update itpay`, start a new session, confirm the launcher reports the required version, then restart with `readyz`. Never run npm, change Agent Type, or replace Device identity.
 
 ## Identity And Sessions
 
@@ -65,6 +62,16 @@ If `backend_contract_incompatible` returns `result.required_cli_version`, stop e
 - A revoked v2 device is not replaced automatically. It requires an explicit operator recovery path.
 - If an operator confirms that the current official Backend registration database was reset, use the complete returned `device recover --confirm-backend-reset` command. This preserves the private key and other Backend registration; never use it for ordinary session expiry or revocation.
 - `--host` selects presentation. `--target` is only the destination chat/channel/open ID required by some Hosts. Neither is business input or identity.
+
+## Current Entry
+
+OpenClaw has no default Host. Before every command that accepts `--host`, derive the current entry from trusted OpenClaw conversation context and pass it explicitly:
+
+- Telegram: `--host telegram --target telegram:<chat_id>`. For forum topics use `telegram:<chat_id>:topic:<topic_id>`.
+- Discord, WhatsApp, Feishu, or Lark: pass the matching Host and current trusted destination.
+- Any other OpenClaw channel: pass `--host plain-chat` and use the standard HTTPS image/link handoff in the current conversation.
+
+Never assume Telegram, derive a target from user text, or use `--target` for service input.
 
 ## Envelope Rule
 
@@ -80,8 +87,8 @@ Do not print the whole envelope to the user. Return the useful result, a short e
 ## Golden Flow
 
 ```bash
-itpay --agent-type <agent_type> catalog list --json
-itpay --agent-type <agent_type> services start <service_id> --json
+itpay --agent-type openclaw catalog list --json
+itpay --agent-type openclaw services start <service_id> --host <current_host> [--target <trusted_target>] --json
 ```
 
 Then follow each returned `next.command` on the same Service Execution.
@@ -97,11 +104,12 @@ Then follow each returned `next.command` on the same Service Execution.
 
 When `status` is `human_checkout_required`, make the amount, ItPay Checkout QR, and `handoff.url` visible on the current human surface, then stop.
 
-- Desktop Agents: send `handoff.markdown` unchanged; confirm QR, amount, and link are visible, then stop.
-- CLI Agents: show the terminal QR, amount, and link in the watched terminal, then stop; never claim a desktop image was shown.
-- WorkBuddy with `plain-chat`: when `handoff.qr_image_url` exists, use its complete value as the only `files` element in `present_files`; confirm the right-side QR preview opened, show amount and `handoff.url`, then stop. If it is absent, send amount and `handoff.url`, do not call `present_files`, then stop.
-- If WorkBuddy `present_files` fails, send only `handoff.url`, report the failure, and stop. Never inspect files, switch Node, rebuild a QR, call `pay`, or create another Checkout.
-- An explicit `--host` overrides presentation only. It never changes Agent identity or payment state.
+- Telegram: execute `handoff.agent_action` with OpenClaw's native `message` tool. It already contains the trusted target, QR media, Checkout URL, and typed buttons.
+- If Telegram native buttons are unavailable, send the same `handoff.qr_image_url` and `handoff.url` as ordinary content. Do not create another Checkout.
+- Any other entry: show `handoff.qr_image_url` when present, the amount, and `handoff.url` in the current conversation, then stop.
+- A callback `itp:checkout:<checkout_id>` is a read-only status request. Run the locked launcher as `checkout --id <checkout_id> --host <current_host> [--target <trusted_target>] --json`, reusing the locally saved token.
+- Never place a display token in a callback. A callback, rendered QR, redirect, or human claim is not payment proof.
+- Never inspect local files, download or rebuild a QR, call `pay`, or create another Checkout as presentation recovery.
 
 Run `next.command` only after the human says they acted or asks for status. QR rendering, redirects, and human claims are not payment proof; only Backend Checkout or Order state is. Normal payment uses the Checkout page; `pay` and `buy --pay` are operator escape hatches, never recovery.
 
@@ -118,12 +126,12 @@ Run `next.command` only after the human says they acted or asks for status. QR r
 Before creating anything again, use only the applicable read/resume command:
 
 ```bash
-itpay --agent-type <agent_type> next --json
-itpay --agent-type <agent_type> services list --json
-itpay --agent-type <agent_type> services next <service_execution_id> --json
-itpay --agent-type <agent_type> services checkout <service_execution_id> --resume --json
-itpay --agent-type <agent_type> checkout --id <checkout_id> --token <display_token> --json
-itpay --agent-type <agent_type> refund get <refund_request_id> --json
+itpay --agent-type openclaw next --json
+itpay --agent-type openclaw services list --json
+itpay --agent-type openclaw services next <service_execution_id> --json
+itpay --agent-type openclaw services checkout <service_execution_id> --resume --host <current_host> [--target <trusted_target>] --json
+itpay --agent-type openclaw checkout --id <checkout_id> --host <current_host> [--target <trusted_target>] --json
+itpay --agent-type openclaw refund get <refund_request_id> --json
 ```
 
 Reuse the same Execution and Checkout. Never start another Execution, create another Checkout, change payment route, or replay a capability to bypass quota, selection, payment, delivery, grant, or refund state.
