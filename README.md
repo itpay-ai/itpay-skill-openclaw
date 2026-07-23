@@ -8,6 +8,7 @@ Portable OpenClaw Skill with a pinned, offline `@itpay/cli` bundle.
 - `SKILL.md` declares Node.js as the only host binary requirement.
 - Total artifact size must stay below ClawHub's 50 MB limit.
 - Agent Type: `openclaw` for the whole flow.
+- OpenClaw has no default entry: the Skill passes the current Host explicitly. Telegram receives a native `message` action; other channels receive the standard HTTPS QR and Checkout link.
 - The Skill never downloads `latest`, hides commands, asks for private keys, or approves payment on the user's behalf.
 - ClawHub Skills are MIT-0; bundled ItPay CLI and dependency license notices remain separately included under `vendor/itpay-cli/`.
 - ClawHub has no paid-Skill or revenue-share metadata. ItPay prices are external service costs and must be shown before Checkout.
