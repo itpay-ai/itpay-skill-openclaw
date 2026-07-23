@@ -38,5 +38,10 @@ test("launcher rejects another platform identity", () => {
 test("OpenClaw Skill contains only bundle and OpenClaw entry rules", () => {
   assert.match(skill, /handoff\.agent_action/);
   assert.match(skill, /--host telegram/);
+  assert.match(skill, /📱 手机点这儿支付/);
+  assert.match(skill, /📋 已授权给我读/);
+  assert.match(skill, /itp:grant_confirmed:<checkout_id>/);
+  assert.match(skill, /Backend returns `grant_active`/);
+  assert.doesNotMatch(skill, /telegram:<chat_id>|typed buttons|itp:checkout:<checkout_id>/);
   assert.doesNotMatch(skill, /npm install -g|WorkBuddy|dangerouslyDisableSandbox|present_files/);
 });

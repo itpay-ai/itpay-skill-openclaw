@@ -17,7 +17,7 @@ Portable OpenClaw Skill with a pinned, offline `@itpay/cli` bundle.
 
 ```bash
 clawhub login
-clawhub skill publish ./skills/itpay --slug itpay --name "ItPay" --owner itpay --version 2.0.15
+clawhub skill publish ./skills/itpay --slug itpay --name "ItPay" --owner itpay --version 2.0.17
 ```
 
 The Skill is owned by the `@itpay` ClawHub publisher. New releases are validated and may remain hidden until automated security review completes. For CI, use ClawHub's reusable `skill-publish.yml`; start with `dry_run: true`.
@@ -26,7 +26,7 @@ The Skill is owned by the `@itpay` ClawHub publisher. New releases are validated
 
 ```bash
 npm test
-clawhub skill publish ./skills/itpay --slug itpay --name "ItPay" --owner <itpay-owner> --version 2.0.15 --dry-run
+clawhub skill publish ./skills/itpay --slug itpay --name "ItPay" --owner <itpay-owner> --version 2.0.17 --dry-run
 ```
 
 Official rules: [Publishing](https://docs.openclaw.ai/clawhub/publishing), [Skill format](https://docs.openclaw.ai/clawhub/skill-format), [Authentication](https://docs.openclaw.ai/clawhub/auth), [Acceptable usage](https://docs.openclaw.ai/clawhub/acceptable-usage), [Security audits](https://docs.openclaw.ai/clawhub/security-audits).
