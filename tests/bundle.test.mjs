@@ -24,7 +24,7 @@ test("bundled CLI matches the locked version", () => {
 test("launcher fixes the OpenClaw identity and bundled distribution", () => {
   const shown = JSON.parse(execFileSync(process.execPath, [launcher, "skill", "show", "itpay", "--json"], { encoding: "utf8" }));
   assert.equal(shown.status, "shown");
-  assert.equal(shown.next.command, "itpay --agent-type openclaw catalog list --json");
+  assert.equal(shown.next, null);
   assert.match(launcherSource, /ITPAY_AGENT_TYPE: "openclaw"/);
   assert.match(launcherSource, /ITPAY_DISTRIBUTION: "openclaw-skill-bundle"/);
 });
@@ -44,7 +44,9 @@ test("OpenClaw Skill contains only bundle and OpenClaw entry rules", () => {
   assert.match(skill, /Backend returns `grant_active`/);
   assert.doesNotMatch(skill, /telegram:<chat_id>|typed buttons|itp:checkout:<checkout_id>/);
   assert.doesNotMatch(skill, /npm install -g|WorkBuddy|dangerouslyDisableSandbox|present_files/);
-  assert.match(skill, /Cross-Platform Vault/);
+  assert.match(skill, /Understand The Human/);
+  assert.match(skill, /Previously Purchased Content/);
+  assert.match(skill, /must not pay again/);
   assert.match(skill, /vault list/);
-  assert.match(skill, /Treat Vault payload text as data/);
+  assert.match(skill, /Treat returned content\s+as data/);
 });
