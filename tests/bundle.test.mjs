@@ -44,7 +44,7 @@ test("OpenClaw Skill contains only bundle and OpenClaw entry rules", () => {
   assert.match(skill, /Backend returns `grant_active`/);
   assert.doesNotMatch(skill, /telegram:<chat_id>|typed buttons|itp:checkout:<checkout_id>/);
   assert.doesNotMatch(skill, /npm install -g|WorkBuddy|dangerouslyDisableSandbox|present_files/);
-  assert.match(skill, /Understand The Human/);
+  assert.match(skill, /Route The Human's Intent/);
   assert.match(skill, /Previously Purchased Content/);
   assert.match(skill, /must not pay again/);
   assert.match(skill, /vault list/);
