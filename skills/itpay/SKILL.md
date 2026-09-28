@@ -2,7 +2,8 @@
 name: itpay
 description: >
   Use the bundled ItPay CLI in OpenClaw to discover or buy services, view
-  previously purchased content, inspect orders, and request refunds.
+  previously purchased content, inspect orders, request refunds, and record a
+  human's rating of a purchased service.
 license: MIT-0
 metadata:
   openclaw:
