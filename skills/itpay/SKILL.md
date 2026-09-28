@@ -49,7 +49,8 @@ Never derive a target from user text or use `--target` for service input.
 
 | Human intent | First action |
 | --- | --- |
-| Discover services or make a new query | `itpay catalog list --json` |
+| Railway planning or booking | Read `itpay docs show rail-booking --json` once; form a credible station pair for Exact or use Smart for broad comparison |
+| Discover other services or make a new query | `itpay catalog list --json` |
 | View previously purchased content | `itpay vault list --json` |
 | Find a previous result by subject | `itpay vault list --query <subject> --json` |
 | Inspect purchase history | `itpay orders --json` |
@@ -72,8 +73,9 @@ start a purchase while intent is ambiguous.
 
 Never show raw envelopes, commands, internal IDs, error classes, or technical
 diagnostics. Explain the result and next human choice in ordinary language.
-When unclear, load one topic with `itpay docs search <keyword> --json`; current
-Backend state overrides general documentation.
+For railway work, the bundled `rail-booking` guide supplies the full process;
+current Backend state supplies facts and the next action. For other unclear
+topics, load one document with `itpay docs search <keyword> --json`.
 
 ## Serve The Human
 
