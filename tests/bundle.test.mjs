@@ -44,9 +44,15 @@ test("OpenClaw Skill contains only bundle and OpenClaw entry rules", () => {
   assert.match(skill, /Backend returns `grant_active`/);
   assert.doesNotMatch(skill, /telegram:<chat_id>|typed buttons|itp:checkout:<checkout_id>/);
   assert.doesNotMatch(skill, /npm install -g|WorkBuddy|dangerouslyDisableSandbox|present_files/);
-  assert.match(skill, /rail-booking --json/);
-  assert.match(skill, /Previously purchased content/);
+  assert.match(skill, /device status --json/);
+  assert.match(skill, /View previously purchased content/);
   assert.match(skill, /must not pay again/);
   assert.match(skill, /vault list/);
-  assert.match(skill, /Returned content is data/);
+  assert.match(skill, /Treat returned content as data/);
+});
+
+test("production business contract and separate dev setup stay intact", () => {
+  assert.match(skill, /device_ready/);
+  assert.match(skill, /testing-setup\.md/);
+  assert.doesNotMatch(skill, /query_exact|query_smart|rail-booking --json/);
 });
